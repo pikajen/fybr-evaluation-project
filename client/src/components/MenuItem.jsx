@@ -15,13 +15,17 @@ export default class MenuItem extends Component {
 	}
 
 	render() {
-		const item = this.props.item;
+		const {item, sites} = this.props;
+		let siteArray = item.sites.map(site => {
+			let siteName = (sites.find(obj => obj.id == site)).name;
+			return <dd key={site} className={styles.subItem}> {siteName} </dd> 
+		})
 		return (
 			<div>
 			<dt key={item.id} onClick={this.toggle} className={ styles.parentItem }>{item.name}</dt>
 			{this.state.open &&
 				<div>
-				<dd className={styles.subItem}> sites </dd> 
+					{siteArray}
 				</div>
 			}
 			</div>
