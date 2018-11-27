@@ -15,10 +15,10 @@ export default class MenuItem extends Component {
 	}
 
 	render() {
-		const {item, sites} = this.props;
+		const {item, sites, onClickSubitem} = this.props;
 		let siteArray = item.sites.map(site => {
 			let siteName = (sites.find(obj => obj.id == site)).name;
-			return <dd key={site} className={styles.subItem}> {siteName} </dd> 
+			return <dd key={site} className={styles.subItem} onClick={() => onClickSubitem(site)}> {siteName} </dd> 
 		})
 		return (
 			<div>

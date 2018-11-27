@@ -17,4 +17,8 @@
 	padding: 10px 10px;
 	background: white;
 	cursor: pointer;
+	
+	&:hover {
+		background-color: #f2f2f2;
+	}
 }
