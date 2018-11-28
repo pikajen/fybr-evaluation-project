@@ -10,9 +10,7 @@ import { centerMapOnSite, mapSetCenter, mapSetZoom } from '../model/map';
 class InteractiveMap extends Component {
   render() {
     const { bounding } = this.props.currentSite;
-    console.log(this.props.treesBySite);
-    const lat = this.props.treesBySite[1976].lat;
-    const long = this.props.treesBySite[1976].long;
+
     const boundingFeature = turf.polygon([[
       [bounding.left, bounding.top],
       [bounding.right, bounding.top],
@@ -21,7 +19,13 @@ class InteractiveMap extends Component {
       [bounding.left, bounding.top]
     ]], { name: 'Bounding Area' });
 
-    const treeFeature = turf.point([long, lat]);
+    const treeCoords = this.props.treesBySite.map( tree => {
+      return [tree.long, tree.lat];
+    })
+
+    const treeFeature = turf.points(
+      treeCoords
+    );
 
     return (
       <Map { ...this.props }>
@@ -51,10 +55,10 @@ class InteractiveMap extends Component {
           id="tree-points"
           type="circle"
           paint={{
-            'circle-radius' : 5,
+            'circle-radius' : 3.5,
             'circle-color' : 'white'
           }}
-          source="tree-points"
+          source='tree-points'
           />
       </Map>
     );
@@ -62,13 +66,14 @@ class InteractiveMap extends Component {
 }
 
 function mapStateToProps(state) {
-
+  let i = 0;
   const filteredTrees = state.trees.ids.reduce((acc, curr) => {
     if(state.trees.byId[curr].site_id === state.sites.selected){
-      acc[curr] = state.trees.byId[curr];
+      acc[i] = state.trees.byId[curr];
+      i++;
     }
     return acc;
-  }, {});
+  }, []);
   
   return {
     currentSite: state.sites.byId[state.sites.selected],
