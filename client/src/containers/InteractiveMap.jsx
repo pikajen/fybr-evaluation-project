@@ -11,7 +11,8 @@ class InteractiveMap extends Component {
   render() {
     const { bounding } = this.props.currentSite;
     console.log(this.props.treesBySite);
-    
+    const lat = this.props.treesBySite[1976].lat;
+    const long = this.props.treesBySite[1976].long;
     const boundingFeature = turf.polygon([[
       [bounding.left, bounding.top],
       [bounding.right, bounding.top],
@@ -20,10 +21,13 @@ class InteractiveMap extends Component {
       [bounding.left, bounding.top]
     ]], { name: 'Bounding Area' });
 
+    const treeFeature = turf.point([long, lat]);
+
     return (
       <Map { ...this.props }>
         <Sources>
           <GeoJSON id="bounding-box" data={ boundingFeature } />
+          <GeoJSON id="tree-points" data={treeFeature} />
         </Sources>
         <Layer
           id="bounding-box"
@@ -43,13 +47,22 @@ class InteractiveMap extends Component {
           }}
           source='bounding-box'
         />
+        <Layer
+          id="tree-points"
+          type="circle"
+          paint={{
+            'circle-radius' : 5,
+            'circle-color' : 'white'
+          }}
+          source="tree-points"
+          />
       </Map>
     );
   }
 }
 
 function mapStateToProps(state) {
-  
+
   const filteredTrees = state.trees.ids.reduce((acc, curr) => {
     if(state.trees.byId[curr].site_id === state.sites.selected){
       acc[curr] = state.trees.byId[curr];
