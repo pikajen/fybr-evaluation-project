@@ -33,6 +33,15 @@ class InteractiveMap extends Component {
           }}
           source="bounding-box"
         />
+        <Layer
+          id="filling-box"
+          type="fill"
+          paint={{
+            'fill-color': '#fff',
+            'fill-opacity': 0.20
+          }}
+          source='bounding-box'
+        />
       </Map>
     );
   }
