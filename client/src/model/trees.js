@@ -4,8 +4,9 @@ export const FETCH_TREES_REQUESTED = 'FETCH_TREES_REQUESTED';
 export const FETCH_TREES_COMPLETED = 'FETCH_TREES_COMPLETED';
 export const FETCH_TREES_ERROR = 'FETCH_TREES_ERROR';
 
-export const TREES_SET_CURRENT = 'TREES_SET_CURRENT';
+//export const TREES_SET_CURRENT = 'TREES_SET_CURRENT';
 
+//these are actions
 function fetchTreesRequested() {
   return {
     type: FETCH_TREES_REQUESTED
@@ -15,7 +16,7 @@ function fetchTreesRequested() {
 function fetchTreesCompleted(trees) {
   return {
     type: FETCH_TREES_COMPLETED,
-    sites
+    trees
   };
 }
 
@@ -41,17 +42,17 @@ export function fetchTrees() {
   }
 }
 
-export function treesSetCurrent(id) {
-  return {
-    type: TREES_SET_CURRENT,
-    id
-  };
-}
+// export function treesSetCurrent(id) {
+//   return {
+//     type: TREES_SET_CURRENT,
+//     id
+//   };
+// }
 
 const initial = {
   status: null,
   error: null,
-  selected: null,
+  //selected: [],
   byId: {},
   ids: []
 };
@@ -68,7 +69,6 @@ const reducer = {
       ...state,
       status: FETCH_TREES_COMPLETED,
       error: null,
-      selected: action.trees.ids.length > 0 ? action.trees.ids[0] : null,
       ...action.trees
     };
   },
@@ -79,12 +79,12 @@ const reducer = {
       error: action.error
     };
   },
-  [TREES_SET_CURRENT](state, action) {
-    return {
-      ...state,
-      selected: action.id
-    };
-  }
+  // [TREES_SET_CURRENT](state, action) {
+  //   return {
+  //     ...state,
+  //     selected: action.id
+  //   };
+  // }
 };
 
 export default (state = initial, action) => reducer.hasOwnProperty(action.type) ? reducer[action.type](state, action) : state;

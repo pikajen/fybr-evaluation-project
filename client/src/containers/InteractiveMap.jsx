@@ -10,6 +10,7 @@ import { centerMapOnSite, mapSetCenter, mapSetZoom } from '../model/map';
 class InteractiveMap extends Component {
   render() {
     const { bounding } = this.props.currentSite;
+    console.log(this.props.treesBySite);
     
     const boundingFeature = turf.polygon([[
       [bounding.left, bounding.top],
@@ -48,8 +49,17 @@ class InteractiveMap extends Component {
 }
 
 function mapStateToProps(state) {
+  
+  const filteredTrees = state.trees.ids.reduce((acc, curr) => {
+    if(state.trees.byId[curr].site_id === state.sites.selected){
+      acc[curr] = state.trees.byId[curr];
+    }
+    return acc;
+  }, {});
+  
   return {
     currentSite: state.sites.byId[state.sites.selected],
+    treesBySite: filteredTrees,
     center: state.map.center,
     zoom: state.map.zoom
   };
