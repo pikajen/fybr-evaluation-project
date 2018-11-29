@@ -35,25 +35,49 @@ class Chart extends Component {
 
   render() {
     const margin = 30;
+    let maxFreq = 0;
     const { width, height } = this.state;
-    const data = [
-      {key: '0m - 10m', freq: 0},
-      {key: '10m - 20m', freq: 0},
-      {key: '20m - 30m', freq: 0},
-      {key: '30m - 40m', freq: 0},
-      {key: '40m - 50m', freq: 0},
-      {key: '50m - 60m', freq: 0},
-      {key: '60m - 70m', freq: 0}
-    ]
+    const data = {
+      '0m - 10m': {key: '0m - 10m', freq: 0},
+      '10m - 20m': {key: '10m - 20m', freq: 0},
+      '20m - 30m': {key: '20m - 30m', freq: 0},
+      '30m - 40m': {key: '30m - 40m', freq: 0},
+      '40m - 50m': {key: '40m - 50m', freq: 0},
+      '50m - 60m': {key: '50m - 60m', freq: 0},
+      '60m - 70m': {key: '60m - 70m', freq: 0}
+    }
+
+    this.props.treesBySite.map(treeHeight => {
+      let range = '';
+      if(treeHeight <= 10 ) {
+        range = '0m - 10m';
+      } else if (treeHeight <= 20) {
+        range = '10m - 20m';
+      } else if (treeHeight <= 30) {
+        range = '20m - 30m';
+      } else if (treeHeight <= 40) {
+        range = '30m - 40m';
+      } else if (treeHeight <= 50) {
+        range = '40m - 50m';
+      } else if (treeHeight <= 60) {
+        range = '50m - 60m';
+      } else {
+        range = '60m - 70m';
+      }
+      const freq = ++data[range].freq;
+      if(freq > maxFreq) {
+          maxFreq = freq;
+      }
+    });
 
     const yScale = scaleLinear({
       rangeRound: [height-(margin*2), 0],
-      domain: [0, 13],
+      domain: [0, maxFreq]
     })
 
     const xScale = scaleBand({
       rangeRound: [0, width-(margin*2)],
-      domain: data.map(x => x.key),
+      domain: Object.keys(data),
       padding: 0.4,
       align: 0.5
     })
@@ -77,24 +101,24 @@ class Chart extends Component {
         />
         <Group left={margin} top={margin}>
           {
-           this.props.treesBySite.map(tree => {
-            const barWidth = xScale.bandwidth();
-            const barHeight = height - (margin*2) - yScale(10);
-            const barX = xScale("30m - 40m");
-            const barY = height - (margin*2)- barHeight;
-            // const res = data.filter(obj => {
-            //   return obj.key === "30m - 40m";
-            // })
-            return (
-               <Bar
-                width={barWidth}
-                height={barHeight}
-                fill={'#00b38f'}
-                x={barX}
-                y={barY}
-                />
+            Object.keys(data).map(range => {
+              const barWidth = xScale.bandwidth();
+              const barHeight = height - (margin*2) - yScale(data[range].freq);
+              const barX = xScale(range);
+              const barY = height - (margin*2)- barHeight;
+
+              return (
+                 <Bar
+                  key={`bar-${range}`}
+                  width={barWidth}
+                  height={barHeight}
+                  fill={'#00b38f'}
+                  x={barX}
+                  y={barY}
+                  />
               );
-          })}
+            })
+          }
         </Group>
         <AxisLeft
           scale={yScale}
