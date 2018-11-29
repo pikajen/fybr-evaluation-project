@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { GradientDarkgreenGreen } from '@vx/gradient';
 import { Bar } from '@vx/shape';
+import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft} from '@vx/axis';
 import {scaleLinear, scaleBand} from '@vx/scale';
 
@@ -34,17 +36,25 @@ class Chart extends Component {
   render() {
     const margin = 30;
     const { width, height } = this.state;
-    
+    const data = [
+      {key: '0m - 10m', freq: 0},
+      {key: '10m - 20m', freq: 0},
+      {key: '20m - 30m', freq: 0},
+      {key: '30m - 40m', freq: 0},
+      {key: '40m - 50m', freq: 0},
+      {key: '50m - 60m', freq: 0},
+      {key: '60m - 70m', freq: 0}
+    ]
+
     const yScale = scaleLinear({
-    rangeRound: [height - (margin*2), 0],
-    domain: [0, 13],
-    nice:true
+      rangeRound: [height-(margin*2), 0],
+      domain: [0, 13],
     })
 
     const xScale = scaleBand({
       rangeRound: [0, width-(margin*2)],
-      padding: 0.2,
-      domain:["0m - 10m", "10m - 20m","20m - 30m", "30m - 40m","40m - 50m","50m - 60m","60m - 70m"],
+      domain: data.map(x => x.key),
+      padding: 0.4,
       align: 0.5
     })
     
@@ -64,15 +74,28 @@ class Chart extends Component {
           width={width}
           height={height}
           fill={`url(#gradient)`}
-        />{
-        // <Bar
-        //   width={200}
-        //   height={400}
-        //   x={30}
-        //   y={60}
-        //   stroke={'black'}
-        // />
-      }
+        />
+        <Group left={margin} top={margin}>
+          {
+           this.props.treesBySite.map(tree => {
+            const barWidth = xScale.bandwidth();
+            const barHeight = height - (margin*2) - yScale(10);
+            const barX = xScale("30m - 40m");
+            const barY = height - (margin*2)- barHeight;
+            // const res = data.filter(obj => {
+            //   return obj.key === "30m - 40m";
+            // })
+            return (
+               <Bar
+                width={barWidth}
+                height={barHeight}
+                fill={'#00b38f'}
+                x={barX}
+                y={barY}
+                />
+              );
+          })}
+        </Group>
         <AxisLeft
           scale={yScale}
           top={margin}
@@ -102,4 +125,22 @@ class Chart extends Component {
   }
 }
 
-export default Chart;
+function mapStateToProps(state) {
+  let i = 0;
+  const filteredTrees = state.trees.ids.reduce((acc, curr) => {
+    if(state.trees.byId[curr].site_id === state.sites.selected){
+      acc[i] = state.trees.byId[curr].height;
+      i++;
+    }
+    return acc;
+  }, []);
+
+  return {
+    treesBySite: filteredTrees,
+  };
+}
+
+const mapDispatchToProps = {
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chart);
