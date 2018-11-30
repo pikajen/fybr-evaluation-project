@@ -115,7 +115,7 @@ class Chart extends Component {
                   fill={'#00b38f'}
                   x={barX}
                   y={barY}
-                  />
+                />
               );
             })
           }
@@ -124,7 +124,6 @@ class Chart extends Component {
           scale={yScale}
           top={margin}
           left={margin}
-          numTicks={14}
           hideAxisLine
           hideTicks
           tickLabelProps={(value, index) => ({
@@ -133,17 +132,17 @@ class Chart extends Component {
           })}
         />
         <AxisBottom
-            top={height-margin}
-            left={margin}
-            scale={xScale}
-            hideAxisLine
-            hideTicks
-            tickLabelProps={(value, index) => ({
-              fill: 'white',
-              fontSize: 11,
-              textAnchor: 'middle'
-            })}
-          />
+          top={height-margin}
+          left={margin}
+          scale={xScale}
+          hideAxisLine
+          hideTicks
+          tickLabelProps={(value, index) => ({
+            fill: 'white',
+            fontSize: 11,
+            textAnchor: 'middle'
+          })}
+        />
       </svg>
     );
   }

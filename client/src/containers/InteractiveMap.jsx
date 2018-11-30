@@ -45,16 +45,16 @@ class InteractiveMap extends Component {
       return `rgb(${colour.r}, ${colour.g}, ${colour.b})`;
     })
 
-    const treeGeoJsonSources = this.props.treesBySite.map((tree, index) => {
-      const treePoints = turf.point([tree.long, tree.lat]);
-      return (<GeoJSON id={`tree-${tree.id}`} key={`tree-${tree.id}`} data={treePoints}/>);
+    const treeGeoJSONSources = this.props.treesBySite.map((tree, index) => {
+      const treePoint = turf.point([tree.long, tree.lat]);
+      return (<GeoJSON id={`tree-${tree.id}`} key={`tree-${tree.id}`} data={treePoint}/>);
     })
 
     const treeLayers = this.props.treesBySite.map((tree, index) => {
-      const heightPer = ((tree.height)/70).toFixed(2);
-      const colour = getColourForPercentage(heightPer);
+      const heightPct = ((tree.height)/70).toFixed(2);
+      const colour = getColourForPercentage(heightPct);
       return(
-          <Layer
+        <Layer
           key={`tree-${tree.id}`}
           id={`tree-${tree.id}`}
           type="circle"
@@ -63,15 +63,15 @@ class InteractiveMap extends Component {
             'circle-color' : colour
           }}
           source={`tree-${tree.id}`}
-          />
-        );
+        />
+      );
     })
 
     return (
       <Map { ...this.props }>
         <Sources>
           <GeoJSON id="bounding-box" data={ boundingFeature } />
-          {treeGeoJsonSources}
+          {treeGeoJSONSources}
         </Sources>
         <Layer
           id="bounding-box"
