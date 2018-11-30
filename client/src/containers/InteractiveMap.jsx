@@ -21,8 +21,8 @@ class InteractiveMap extends Component {
 
     const percentColours = [
       {pct: 0.0, colour: {r: 0xff, g: 0xff, b: 0xff}},
-      {pct: 0.5, colour: {r: 0x00, g: 0xff, b: 0x00}},
-      {pct: 1.0, colour: {r: 0x00, g: 0x33, b: 0x00}}
+      {pct: 0.5, colour: {r: 91, g: 215, b: 91}},
+      {pct: 1.0, colour: {r: 20, g: 82, b: 20}}
     ];
 
     let getColourForPercentage = (pct => {
@@ -47,7 +47,7 @@ class InteractiveMap extends Component {
 
     const treeGeoJsonSources = this.props.treesBySite.map((tree, index) => {
       const treePoints = turf.point([tree.long, tree.lat]);
-      return (<GeoJSON id={`tree-${tree.id}`} data={treePoints}/>);
+      return (<GeoJSON id={`tree-${tree.id}`} key={`tree-${tree.id}`} data={treePoints}/>);
     })
 
     const treeLayers = this.props.treesBySite.map((tree, index) => {
@@ -55,6 +55,7 @@ class InteractiveMap extends Component {
       const colour = getColourForPercentage(heightPer);
       return(
           <Layer
+          key={`tree-${tree.id}`}
           id={`tree-${tree.id}`}
           type="circle"
           paint={{
