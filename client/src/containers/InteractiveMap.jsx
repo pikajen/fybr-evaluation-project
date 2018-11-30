@@ -27,6 +27,33 @@ class InteractiveMap extends Component {
       treeCoords
     );
 
+    const percentColours = [
+      {pct: 0.0, colour: {r: 0xff, g: 0xff, b: 0xff}},
+      {pct: 0.5, colour: {r: 0x00, g: 0xff, b: 0x00}},
+      {pct: 1.0, colour: {r: 0x00, g: 0x33, b: 0x00}}
+    ];
+
+    let getColourForPercentage = (pct => {
+      let i;
+      for(i = 1; i < percentColours.length - 1; i++) {
+        if(pct < percentColours[i].pct) {
+          break;
+        }
+      }
+      const lowerColour = percentColours[i-1]; 
+      const upperColour = percentColours[i];
+      const rangePct = (pct - lowerColour.pct)/(upperColour.pct - lowerColour.pct);
+      const pctLower = 1 - rangePct;
+      const pctUpper = rangePct;
+      const colour = {
+        r: Math.floor(lowerColour.colour.r * pctLower + upperColour.colour.r * pctUpper),
+        g: Math.floor(lowerColour.colour.g * pctLower + upperColour.colour.g * pctUpper),
+        b: Math.floor(lowerColour.colour.b * pctLower + upperColour.colour.b * pctUpper)
+      };
+      return `rgb(${colour.r}, ${colour.g}, ${colour.b})`;
+    })
+
+
     return (
       <Map { ...this.props }>
         <Sources>
@@ -55,8 +82,8 @@ class InteractiveMap extends Component {
           id="tree-points"
           type="circle"
           paint={{
-            'circle-radius' : 3.5,
-            'circle-color' : 'white'
+            'circle-radius' : 4,
+            'circle-color' : getColourForPercentage(0.7)
           }}
           source='tree-points'
           />
